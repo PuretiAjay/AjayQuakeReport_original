@@ -47,20 +47,41 @@ public final class QueryUtils {
         // Catch the exception so the app doesn't crash, and print the error message to the logs.
         try {
 
-            // TODO: Parse the response given by the SAMPLE_JSON_RESPONSE string and
-            // build up a list of Earthquake objects with the corresponding data.
+            // Create a JSONObject from the SAMPLE_JSON_RESPONSE string
             JSONObject baseJsonResponse = new JSONObject(SAMPLE_JSON_RESPONSE);
+
+            // Extract the JSONArray associated with the key called "features",
+            // which represents a list of features (or earthquakes).
             JSONArray earthquakeArray = baseJsonResponse.getJSONArray("features");
 
-            for (int i = 0; i < earthquakeArray.length(); i++)
-            {
-                JSONObject currentEarthquake = earthquakeArray.getJSONObject(i);
-                JSONObject properties = currentEarthquake.getJSONObject("properties");
-                String magnitude = properties.getString("mag");
-                String location = properties.getString("place");
-                String time = properties.getString("time");
+            // For each earthquake in the earthquakeArray, create an {@link Earthquake} object
+            for (int i = 0; i < earthquakeArray.length(); i++) {
 
-                Earthquake earthquake = new Earthquake(magnitude, location, time);
+                // Get a single earthquake at position i within the list of earthquakes
+                JSONObject currentEarthquake = earthquakeArray.getJSONObject(i);
+
+                // For a given earthquake, extract the JSONObject associated with the
+                // key called "properties", which represents a list of all properties
+                // for that earthquake.
+                JSONObject properties = currentEarthquake.getJSONObject("properties");
+
+                // Extract the value for the key called "mag"
+                double magnitude = properties.getDouble("mag");
+
+                // Extract the value for the key called "place"
+                String location = properties.getString("place");
+
+                // Extract the value for the key called "time"
+                long time = properties.getLong("time");
+
+                // Extract the value for the key called "url"
+                String url = properties.getString("url");
+
+                // Create a new {@link Earthquake} object with the magnitude, location, time,
+                // and url from the JSON response.
+                Earthquake earthquake = new Earthquake(magnitude, location, time, url);
+
+                // Add the new {@link Earthquake} to the list of earthquakes.
                 earthquakes.add(earthquake);
             }
 
